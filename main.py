@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -36,7 +35,8 @@ settings = {}
 settings['fs'] = 500
 
 # data recorded with the ECG sensor
-df = pd.read_csv("/Users/marioantolinezherrera/Desktop/CWRU/EBME_421/course_project/py_codes/kaggle_code/ID_1049.csv", sep=";", index_col="ms")
+df = pd.read_csv("/Users/marioantolinezherrera/Desktop/CWRU/EBME_421/course_project/py_codes/kaggle_code/ecg.csv", sep=";", index_col="ms")
+#rr_manual = np.loadtxt("../input/manually-corrected-rrintervals/manual-correction-rr.txt", dtype=int)
 
 plt.figure(figsize=(20, 7))
 start = 0
@@ -244,7 +244,7 @@ for start, stop in get_plot_ranges(sampfrom, sampto, nr_plots):
     plt.gca().set_ylim(400, 800)
     
     ax2 = plt.gca().twinx()
-    ax2.plot(np.cumsum(rr_manual)+peaks[0], rr_manual, label="Corrected RR-intervals", fillstyle="none", color="#A651D8", markeredgewidth=1, marker="o", markersize=12)
+    #ax2.plot(np.cumsum(rr_manual)+peaks[0], rr_manual, label="Corrected RR-intervals", fillstyle="none", color="#A651D8", markeredgewidth=1, marker="o", markersize=12)
     ax2.plot(np.cumsum(rr)+peaks[0], rr, label="RR-intervals", color="k", linewidth=2, marker=".", markersize=8)
     
     ax2.set_xlim(start, stop)
@@ -279,13 +279,13 @@ for k, v in timedomain(rr).items():
 
 print()
 print("Time domain metrics - manually corrected RR-intervals:")
-for k, v in timedomain(rr_manual).items():
+for k, v in timedomain(rr).items(): #changed rr_manual to rr
     print("- %s: %.2f" % (k, v))
     
     
 # create interpolation function based on the rr-samples. 
-x = np.cumsum(rr_manual) / 1000.0
-f = interp1d(x, rr_manual, kind='cubic')
+x = np.cumsum(rr) / 1000.0 #changed rr_manual to rr
+f = interp1d(x, rr, kind='cubic') #changed rr_manual to rr
 
 # sample rate for interpolation
 fs = 4.0
@@ -299,7 +299,7 @@ plt.figure(figsize=(20, 15))
 
 plt.subplot(211)
 plt.title("RR intervals")
-plt.plot(x, rr_manual, color="k", markerfacecolor="#A651D8", markeredgewidth=0, marker="o", markersize=8)
+#plt.plot(x, rr_manual, color="k", markerfacecolor="#A651D8", markeredgewidth=0, marker="o", markersize=8)
 plt.xlabel("Time (s)")
 plt.ylabel("RR-interval (ms)")
 plt.title("Interpolated")
@@ -424,7 +424,7 @@ def plot_poincare(rr):
     
     return sd1, sd2
 
-sd1, sd2 = plot_poincare(rr_manual)
+sd1, sd2 = plot_poincare(rr) #changed rr_manual to rr
 print("SD1: %.3f ms" % sd1)
 print("SD2: %.3f ms" % sd2)
 
