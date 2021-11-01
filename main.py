@@ -45,8 +45,8 @@ for f in os.listdir(dir):
     
 #This method creates creates a .csv results file from the patients_data
 #counter value is used to assign a new name to each results
-def evaluate_patient_data(input_data, counter):
-    file_creator_index = counter;
+def evaluate_patient_data(input_data, ID_col):
+    file_creator_index = ID_col;
     hrv_out = hrv.hrv(input_data)  
     dict_out = hrv_out.as_dict()
     csv_columns = dict_out.keys()
@@ -78,7 +78,7 @@ for i in id_col: #iterates through patient ids column
     else: #if different patient as previous row, evaluate function and clear patient_data 
         if(restart != 1):
             try:
-                evaluate_patient_data(patient_data, counter)
+                evaluate_patient_data(patient_data, i)
             except ValueError:
                     pass
             patient_data.clear()
@@ -93,10 +93,7 @@ for i in id_col: #iterates through patient ids column
 #To do:
     #1) stop if two blank cells are detected
     
-    #2) enter patients_list as function argument to name each result_file with 
-    #the name of the patient
-    
-    #3) analyse and interpretate results of arrest type with result data
+    #2) analyse and interpretate results of arrest type with result data
     
 #References:
     #https://pyhrv.readthedocs.io/en/latest/_pages/api/hrv.html#ref-hrvfunc 
