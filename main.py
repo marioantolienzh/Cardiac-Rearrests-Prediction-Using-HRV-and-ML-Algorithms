@@ -1,8 +1,9 @@
+asdf# -*- coding: utf-8 -*-
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct 30 11:51:34 2021
-
 @author: marioantolinezherrer
 """
 import pyhrv as hrv
@@ -11,10 +12,10 @@ from csv import reader
 import pandas as pd
 from pandas import ExcelWriter
 from pandas import ExcelFile
+import sys 
 import os
-import sys
 
-filename_xlsx = '/.../data_path/EBME 421 Project - HRV Files.xlsx'
+filename_xlsx = '/Users/marioantolinezherrera/Desktop/CWRU/FALL/EBME_421/course_project/py_codes/laken_irish_excels/EBME 421 Project - HRV Files.xlsx'
 
 #1. obtaining the data from a single .csv file
 # data = list()
@@ -38,8 +39,8 @@ RR_int_col = df['RR Int'] #RR intervals data
 type_col = df['Type'] #rearrest type
 
 
-#Select directory where we are going to work & remove previous files
-dir = '/.../results_folder_path/hrv_results'
+#Select directory where we are going to store the ouput files & remove previous files
+dir = '/Users/marioantolinezherrera/Desktop/CWRU/FALL/EBME_421/course_project/py_codes/hrv_library/hrv_results'
 for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))
     
@@ -61,35 +62,33 @@ def evaluate_patient_data(input_data, ID_col):
 #and evaluates function in a loop over every element in data row
 patients_list = list()
 patient_data = list()
-restart = 1 #1 means true (means it must not calculate evaluate the function as patients_data list is empty)
+
 counter = 0
-previous_item = 0
+previous_item = id_col.get(0)
+
 patient_data.clear()
+patients_list.clear()
 
 for i in id_col: #iterates through patient ids column
-    
-    # if ((not RR_int_col.get(i)) and (not RR_int_col.get(previous_item))): #exits if two consecutive blank cells are detected (end)
-    #         print('All data has been processed :)')
-    #         sys.exit()
             
     if(i == previous_item): #if same patient as previous row, append RR_int_col data to patient_data
         if(RR_int_col.get(i) != None):
-            patient_data.append(int(RR_int_col.get(i)))
+            patient_data.append(float(RR_int_col.get(i)))
     else: #if different patient as previous row, evaluate function and clear patient_data 
-        if(restart != 1):
+        if(patient_data.__len__() > 1):
             try:
                 evaluate_patient_data(patient_data, i)
             except ValueError:
-                    pass
+                print('ValueError on index:' + str(counter))
+                pass
             patient_data.clear()
-            restart = 1
         else:
-            restart = 0
             patients_list.append(i)
             
-    previous_item = i   
+    previous_item = i
     counter +=1
-
+print('All data has been processed')
+sys.exit()
 #To do:
     #1) stop if two blank cells are detected
     
@@ -100,4 +99,3 @@ for i in id_col: #iterates through patient ids column
     #https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html 
     #https://biosppy.readthedocs.io/en/stable/tutorial.html
     #https://www.tutorialspoint.com/How-to-save-a-Python-Dictionary-to-CSV-file
-
